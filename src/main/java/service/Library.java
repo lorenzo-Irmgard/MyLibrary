@@ -1,6 +1,7 @@
 package service;
 
 import model.Book;
+import service.filters.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +11,16 @@ public class Library {
     private final List<Book> books = new ArrayList<>();
 
     public void addBook(Book book) {
-            books.add(book);
+        if (!books.contains(book)) books.add(book); // БАГ#1 ИСПРАВЛЕНИЕ: я добавил if здесь
     }
 
     public void removeBook(String title) {
         books.removeIf(book -> book.getTitle().equals(title));
     }
-
-    public List<Book> searchByTitle(String title) {
+    //Сюда подаются фильтры, написанные для каждого поля класса Book.
+    public List<Book> search(Filter filter) {
         return books.stream()
-                .filter(book -> book.getTitle().contains(title))
+                .filter(filter::isSatisfiedBy)
                 .collect(Collectors.toList());
     }
 
